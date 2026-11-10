@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preview — Live HTML Playground</title>
+<meta name="description" content="Write HTML, CSS and JavaScript and see it render instantly. Free, no sign-up, with shareable links and responsive device previews.">
+<meta name="theme-color" content="#0b0d12">
+<meta name="color-scheme" content="dark light">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Preview — Live HTML Playground">
+<meta property="og:description" content="Write HTML and see it render instantly. Share your code with a single link.">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Preview — Live HTML Playground">
+<meta name="twitter:description" content="Write HTML and see it render instantly. Share your code with a single link.">
+<noscript><style>body::before{content:"This playground needs JavaScript enabled.";display:block;padding:24px;color:#fff}</style></noscript>
+<style>
+  :root{
+    --bg:#0b0d12; --panel:#11141b; --panel-2:#161a23; --border:#222735;
+    --text:#e6e9f0; --muted:#8b93a7; --accent:#7c8cff; --accent-2:#a78bfa;
+    --ok:#34d399; --radius:12px;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  :root[data-theme="light"]{
+    --bg:#f4f5f9; --panel:#ffffff; --panel-2:#f7f8fb; --border:#e3e6ee;
+    --text:#161922; --muted:#6b7285; --accent:#5b6cff; --accent-2:#8b5cf6;
+  }
+  *{box-sizing:border-box;margin:0}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);display:flex;flex-direction:column;overflow:hidden;
+    background-image:radial-gradient(900px 400px at 15% -10%,color-mix(in srgb,var(--accent) 14%,transparent),transparent),
+                     radial-gradient(700px 400px at 100% 0,color-mix(in srgb,var(--accent-2) 12%,transparent),transparent);}
+  header{display:flex;align-items:center;gap:14px;padding:12px 18px;border-bottom:1px solid var(--border);
+    background:color-mix(in srgb,var(--panel) 80%,transparent);backdrop-filter:blur(10px);flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:650;letter-spacing:-.01em}
+  .logo{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    display:grid;place-items:center;color:#fff;font:700 13px var(--mono);box-shadow:0 4px 16px color-mix(in srgb,var(--accent) 45%,transparent)}
+  .spacer{flex:1}
+  .group{display:flex;gap:2px;padding:3px;background:var(--panel-2);border:1px solid var(--border);border-radius:10px}
+  button{font:500 13px var(--sans);color:var(--muted);background:transparent;border:0;border-radius:8px;padding:7px 11px;
+    cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.15s}
+  button:hover{color:var(--text);background:color-mix(in srgb,var(--accent) 10%,transparent)}
+  button.active{color:var(--text);background:var(--panel);box-shadow:0 1px 4px rgba(0,0,0,.25)}
+  button.primary{color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 4px 14px color-mix(in srgb,var(--accent) 40%,transparent)}
+  button.primary:hover{filter:brightness(1.1);color:#fff}
+  button.ghost{border:1px solid var(--border);background:var(--panel-2)}
+  svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  main{flex:1;display:flex;min-height:0;padding:14px;gap:0}
+  .pane{display:flex;flex-direction:column;min-width:0;background:var(--panel);border:1px solid var(--border);
+    border-radius:var(--radius);overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+  #editorPane{flex:0 0 50%}
+  #previewPane{flex:1}
+  .bar{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--border);background:var(--panel-2);
+    font-size:12px;color:var(--muted)}
+  .dots{display:flex;gap:6px;margin-right:4px}
+  .dots i{width:10px;height:10px;border-radius:50%;background:var(--border)}
+  .dots i:nth-child(1){background:#ff5f57}.dots i:nth-child(2){background:#febc2e}.dots i:nth-child(3){background:#28c840}
+  .status{margin-left:auto;display:flex;align-items:center;gap:6px}
+  .pulse{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 var(--ok)}
+  .pulse.run{animation:p .8s}
+  @keyframes p{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ok) 70%,transparent)}100%{box-shadow:0 0 0 8px transparent}}
+  .editor{flex:1;display:flex;min-height:0;font:13px/1.65 var(--mono)}
+  #gutter{padding:14px 10px 14px 14px;text-align:right;color:var(--muted);opacity:.55;user-select:none;overflow:hidden;white-space:pre;min-width:46px}
+  #code{flex:1;resize:none;border:0;outline:0;background:transparent;color:var(--text);font:inherit;padding:14px 14px 14px 4px;
+    white-space:pre;overflow:auto;tab-size:2}
+  #divider{flex:0 0 14px;cursor:col-resize;position:relative}
+  #divider::after{content:"";position:absolute;left:50%;top:50%;width:4px;height:44px;transform:translate(-50%,-50%);
+    border-radius:4px;background:var(--border);transition:.15s}
+  #divider:hover::after,#divider.drag::after{background:var(--accent);height:64px}
+  .stage{flex:1;display:flex;justify-content:center;background:
+    repeating-conic-gradient(color-mix(in srgb,var(--border) 35%,transparent) 0 25%,transparent 0 50%) 0 0/20px 20px;overflow:auto}
+  iframe{border:0;background:#fff;height:100%;width:100%;transition:width .25s ease;box-shadow:0 0 40px rgba(0,0,0,.25)}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);opacity:0;background:var(--panel);border:1px solid var(--border);
+    padding:9px 16px;border-radius:999px;font-size:13px;transition:.25s;pointer-events:none}
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+  .size{font-family:var(--mono)}
+  button:focus-visible,#code:focus-visible,#divider:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .view header,.view #editorPane,.view #divider,.view .bar{display:none}
+  .view main{padding:0}
+  .view #previewPane{border:0;border-radius:0;box-shadow:none}
+  .view .stage{background:#fff}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+  @media (max-width:860px){
+    body{overflow:auto}
+    main{flex-direction:column;gap:12px;min-height:0}
+    #editorPane{flex:0 0 340px}#previewPane{flex:0 0 480px}#divider{display:none}
+    .hide-sm{display:none}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="logo">&lt;/&gt;</div><span>Preview</span></div>
+  <div class="spacer"></div>
+
+  <div class="group hide-sm" id="devices" title="Viewport size">
+    <button data-w="100%" class="active"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Desktop</button>
+    <button data-w="768px"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M11 18h2"/></svg>Tablet</button>
+    <button data-w="375px"><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>Mobile</button>
+  </div>
+
+  <div class="group">
+    <button id="auto" class="active" title="Auto-run on typing">Live</button>
+    <button id="run" class="primary" title="Run (Ctrl/⌘ + Enter)"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg>Run</button>
+  </div>
+
+  <div class="group">
+    <button id="share" title="Copy a shareable link to your code" aria-label="Copy shareable link"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>Share</button>
+    <button id="shareView" title="Copy a link that shows only the rendered output" aria-label="Copy output-only link"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+    <button id="open" title="Open preview in new tab"><svg viewBox="0 0 24 24"><path d="M14 3h7v7M10 14L21 3M21 14v7H3V3h7"/></svg></button>
+    <button id="copy" title="Copy code"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg></button>
+    <button id="download" title="Download .html"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg></button>
+    <button id="upload" title="Load .html file"><svg viewBox="0 0 24 24"><path d="M12 21V9M7 14l5-5 5 5M4 3h16"/></svg></button>
+    <button id="reset" title="Reset to starter"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 109-9 9 9 0 00-6.7 3L3 8M3 3v5h5"/></svg></button>
+    <button id="theme" title="Toggle theme"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></button>
+  </div>
+  <input type="file" id="file" accept=".html,.htm,text/html" hidden>
+</header>
+
+<main>
+  <section class="pane" id="editorPane">
+    <div class="bar"><div class="dots"><i></i><i></i><i></i></div><span>index.html</span>
+      <span class="status"><span id="count">0 lines</span></span></div>
+    <div class="editor"><pre id="gutter">1</pre><textarea id="code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="HTML code editor"></textarea></div>
+  </section>
+
+  <div id="divider" role="separator" aria-orientation="vertical"></div>
+
+  <section class="pane" id="previewPane">
+    <div class="bar"><div class="dots"><i></i><i></i><i></i></div><span>Preview</span>
+      <span class="status"><span class="pulse" id="pulse"></span><span class="size" id="size">—</span></span></div>
+    <div class="stage"><iframe id="frame" title="Live preview" sandbox="allow-scripts allow-forms allow-modals allow-popups"></iframe></div>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+const STARTER = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hello</title>
+  <style>
+    body{margin:0;min-height:100vh;display:grid;place-items:center;
+      font-family:system-ui,sans-serif;color:#fff;
+      background:linear-gradient(135deg,#4f46e5,#9333ea,#ec4899)}
+    .card{background:rgba(255,255,255,.14);backdrop-filter:blur(12px);
+      padding:40px 48px;border-radius:20px;text-align:center}
+    button{margin-top:16px;padding:10px 20px;border:0;border-radius:10px;
+      font-weight:600;cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Hello, world 👋</h1>
+    <p>Edit the code on the left — this updates live.</p>
+    <button id="b">Clicked 0 times</button>
+  </div>
+  <script>
+    let n = 0;
+    b.onclick = () => b.textContent = 'Clicked ' + (++n) + ' times';
+  <\/script>
+</body>
+</html>`;
+
+const $ = id => document.getElementById(id);
+const code=$('code'), frame=$('frame'), gutter=$('gutter');
+const KEY='preview:code:v1';
+let live=true, timer;
+
+try{ code.value = localStorage.getItem(KEY) ?? STARTER }catch{ code.value = STARTER }
+try{ const t=localStorage.getItem('preview:theme'); if(t) document.documentElement.dataset.theme=t }catch{}
+
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1600)}
+function lines(){
+  const n=code.value.split('\n').length;
+  gutter.textContent=Array.from({length:n},(_,i)=>i+1).join('\n');
+  $('count').textContent=n+(n===1?' line':' lines');
+}
+function run(){
+  frame.srcdoc = code.value;
+  const p=$('pulse'); p.classList.remove('run'); void p.offsetWidth; p.classList.add('run');
+  try{localStorage.setItem(KEY,code.value)}catch{}
+}
+function schedule(){ lines(); if(live){clearTimeout(timer);timer=setTimeout(run,350)} }
+function size(){ $('size').textContent=Math.round(frame.getBoundingClientRect().width)+' px' }
+
+code.addEventListener('input',schedule);
+code.addEventListener('scroll',()=>gutter.scrollTop=code.scrollTop);
+code.addEventListener('keydown',e=>{
+  if(e.key==='Tab'){
+    e.preventDefault();
+    const s=code.selectionStart,en=code.selectionEnd;
+    code.setRangeText('  ',s,en,'end'); schedule();
+  }
+  if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run()}
+});
+document.addEventListener('keydown',e=>{ if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run()} });
+
+$('run').onclick=run;
+$('auto').onclick=e=>{live=!live;e.currentTarget.classList.toggle('active',live);toast(live?'Live preview on':'Live preview off — press Run');};
+$('copy').onclick=async()=>{try{await navigator.clipboard.writeText(code.value);toast('Code copied')}catch{toast('Copy failed')}};
+$('download').onclick=()=>{
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([code.value],{type:'text/html'}));
+  a.download='index.html';a.click();URL.revokeObjectURL(a.href);
+};
+$('open').onclick=()=>{
+  const u=URL.createObjectURL(new Blob([code.value],{type:'text/html'}));
+  window.open(u,'_blank');setTimeout(()=>URL.revokeObjectURL(u),60000);
+};
+$('upload').onclick=()=>$('file').click();
+$('file').onchange=async e=>{
+  const f=e.target.files[0]; if(!f) return;
+  code.value=await f.text(); schedule(); run(); toast('Loaded '+f.name); e.target.value='';
+};
+$('reset').onclick=()=>{ if(confirm('Reset editor to the starter template?')){code.value=STARTER;schedule();run()} };
+$('theme').onclick=()=>{
+  const r=document.documentElement;
+  r.dataset.theme=r.dataset.theme==='light'?'dark':'light';
+  try{localStorage.setItem('preview:theme',r.dataset.theme)}catch{}
+};
+
+// Device width toggles
+document.querySelectorAll('#devices button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#devices button').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active'); frame.style.width=b.dataset.w; setTimeout(size,300);
+});
+
+// Drag-to-resize divider
+const div=$('divider'),ed=$('editorPane'),main=document.querySelector('main');
+div.addEventListener('pointerdown',e=>{
+  div.setPointerCapture(e.pointerId);div.classList.add('drag');frame.style.pointerEvents='none';
+  const move=ev=>{
+    const r=main.getBoundingClientRect();
+    const pct=Math.min(80,Math.max(20,((ev.clientX-r.left)/r.width)*100));
+    ed.style.flexBasis=pct+'%';size();
+  };
+  const up=()=>{div.classList.remove('drag');frame.style.pointerEvents='';
+    div.removeEventListener('pointermove',move);div.removeEventListener('pointerup',up)};
+  div.addEventListener('pointermove',move);div.addEventListener('pointerup',up);
+});
+
+// ---- Sharing: code is compressed into the URL hash (never sent to a server) ----
+function toB64u(buf){
+  let s=''; const b=new Uint8Array(buf);
+  for(let i=0;i<b.length;i+=0x8000) s+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000));
+  return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function fromB64u(t){
+  const bin=atob(t.replace(/-/g,'+').replace(/_/g,'/'));
+  return Uint8Array.from(bin,c=>c.charCodeAt(0));
+}
+async function pack(text){
+  if('CompressionStream' in window){
+    const s=new Blob([text]).stream().pipeThrough(new CompressionStream('deflate-raw'));
+    return 'c='+toB64u(await new Response(s).arrayBuffer());
+  }
+  return 'r='+encodeURIComponent(text);
+}
+async function unpack(hash){
+  const h=hash.replace(/^#/,'');
+  if(h.startsWith('c=')){
+    const s=new Blob([fromB64u(h.slice(2))]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+    return await new Response(s).text();
+  }
+  if(h.startsWith('r=')) return decodeURIComponent(h.slice(2));
+  return null;
+}
+async function copyLink(viewOnly){
+  try{
+    const base=location.origin+location.pathname+(viewOnly?'?view':'');
+    const url=base+'#'+await pack(code.value);
+    try{await navigator.clipboard.writeText(url)}catch{prompt('Copy this link:',url)}
+    toast(viewOnly?'Output-only link copied':'Share link copied');
+  }catch{toast('Could not create link')}
+}
+$('share').onclick=()=>copyLink(false);
+$('shareView').onclick=()=>copyLink(true);
+
+// ---- Boot: view-only mode and loading shared code ----
+const viewOnly=new URLSearchParams(location.search).has('view');
+if(viewOnly){
+  document.body.classList.add('view');
+  frame.setAttribute('sandbox','allow-scripts allow-forms allow-modals allow-popups');
+}
+new ResizeObserver(size).observe(frame);
+(async()=>{
+  try{
+    const shared=location.hash?await unpack(location.hash):null;
+    if(shared!==null){
+      code.value=shared;
+      if(viewOnly) code.value=shared; // view mode never overwrites the visitor's saved draft
+    }
+  }catch{ toast('That shared link could not be read') }
+  lines();
+  if(viewOnly){ frame.srcdoc=code.value } else { run() }
+})();
+</script>
+</body>
+</html>
